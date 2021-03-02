@@ -1,7 +1,7 @@
 // 英文合法字符串
 function canBeEn(str) {
-    // 仅判断：数字字母、逗号、空格、斜杠、ASCII 引号，Unicode 引号，英文圆括号，英文句号，叹号，问号，dash
-    return str != undefined && /^[0-9a-zA-Z, //\\\'\"‘’“”\(\)\.\!\?\-]+$/.test(str);
+    // 仅判断：数字字母、逗号、空格、斜杠、ASCII 引号，Unicode 引号，英文圆括号，英文句号，叹号，问号，dash，换行（可能使得结果中中英轮流出现的条件不满足）
+    return str != undefined && /^[0-9a-zA-Z, //\\\'\"‘’“”\(\)\.\!\?\-\r\n]+$/.test(str);
 }
 
 // 英文字母
