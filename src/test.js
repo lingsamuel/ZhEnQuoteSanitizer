@@ -11,7 +11,7 @@ function testResult(str, firstLang, arr) {
         assert(result[0].lang == firstLang);
     }
     // console.log(result);
-    // console.log(result.map(x => x.content));
+    // console.log(result[0].lang, result.map(x => x.content));
     if (arr != undefined) {
         assert(arr.length == result.length, `${JSON.stringify(arr)} != ${JSON.stringify(result)}`);
         for (let i = 0; i < arr.length; i++) {
@@ -62,7 +62,9 @@ testResult("English“English English”。中文", "en", ['English“English En
 // TODO: Bugs
 // testResult("“中文 English English”。\n“English English 中文”。");
 // testResult("// “符号开头，引号“mixed””");
-
+// testResult("// 符号开头和空格 他说：“Mary said,‘It’me.’”。");
+// testResult("// 符号开头他说：“Mary said,‘It’me.’”。");
+// testResult("他说：“Mary said,‘It’me.’”。"); // 这个的外引号应该是中文，理论上。
 
 
 // console.log(htmlSanitizer("他说：'Mary said,‘It’me.’'。"))
