@@ -4,6 +4,8 @@
 
 主要为了解决 Unicode 的引号问题。
 
+实现非常糙快猛，如果之后有空，也许可以写得好看一点，并扩展到[更多有问题的字符](https://www.zhihu.com/question/31424658)或语言上。
+
 ## Example
 
 ```js
@@ -15,3 +17,7 @@ sanitizer("他站在那，感叹了句“What a beautiful scene!”。")
 //   { lang: 'zh', content: '。' }
 // ]
 ```
+
+啊，生命如此美好。
+
+![image](https://user-images.githubusercontent.com/14567045/109621310-c287c580-7b75-11eb-827e-61267b729c05.png)
