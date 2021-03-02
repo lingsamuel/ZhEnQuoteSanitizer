@@ -78,6 +78,9 @@ testResult("English“English English”。中文", "en", ['English“English En
 // 由于丢失了上下文信息，因此不能判断最后一个引号是不是中立引号。
 // testResult("中文“中文 English English”", "zh", ['中文“中文', ' English English', '”']);
 // testResult("English“中文 English English”", "en", ['English', '“中文', ' English English', '”']);
+// testResult("a中文“”引号");
+// testResult("中文“”引号");
+// testResult("中文 “引号”"); // 由于多了个空格，quote 判断错误
 
 
 // console.log(htmlSanitizer("他说：'Mary said,‘It’me.’'。"))
