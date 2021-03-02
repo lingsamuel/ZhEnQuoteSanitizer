@@ -11,7 +11,7 @@ function testResult(str, firstLang, arr) {
         assert(result[0].lang == firstLang);
     }
     // console.log(result);
-    console.log(result.map(x => x.content));
+    // console.log(result.map(x => x.content));
     if (arr != undefined) {
         assert(arr.length == result.length, `${JSON.stringify(arr)} != ${JSON.stringify(result)}`);
         for (let i = 0; i < arr.length; i++) {
@@ -38,8 +38,7 @@ testResult("“引号”", "zh", ["“引号”"])
 testResult("“引号”，和英文 “english”", "zh", ["“引号”，和英文", " “english”"])
 testResult("it’me 的中文含义是什么？", "en", ["it’me ", "的中文含义是什么？"])
 
-// 目前的解析比较简陋，不具备解析嵌套功能
-// testResult("“引号“mixed””", "zh", ["“引号", "“mixed”", "”"])
+testResult("“引号“mixed””", "zh", ["“引号", "“mixed”", "”"])
 
 // 取自 https://zh-style-guide.readthedocs.io/zh_CN/latest/标点符号/中英文混用时标点用法.html
 testResult("distributed SQL 在这里是什么意思？", "en", ["distributed SQL ", "在这里是什么意思？"]);
@@ -60,7 +59,11 @@ testResult("中文“English English”。中文", "zh", ['中文', '“English 
 testResult("English“English English”。English", "en", ['English“English English”', '。', 'English'])
 testResult("English“English English”。中文", "en", ['English“English English”', '。中文'])
 
-// TODO: Bug
+// TODO: Bugs
 // testResult("“中文 English English”。\n“English English 中文”。");
+// testResult("// “符号开头，引号“mixed””");
+
+
+
 // console.log(htmlSanitizer("他说：'Mary said,‘It’me.’'。"))
 // console.log(htmlSanitizer("“Mary said,‘It’me.’”，他说。"))
