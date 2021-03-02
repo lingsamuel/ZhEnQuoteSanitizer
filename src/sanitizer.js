@@ -22,6 +22,10 @@ function canBeEnLetter(char) {
     return isLetter(char) || isQuote(char) || ([' ', ',', '/', '\\', '(', ')', '.']).includes(char);
 }
 
+function hasEnLetter(str) {
+    return str != undefined && /[a-zA-Z]/g.test(str);
+}
+
 function isQuote(char) {
     return (['\'', '\"', '‘', '’', '“', '”']).includes(char);
 }
@@ -38,7 +42,15 @@ function isCloseQuote(char) {
     return (['’', '”']).includes(char);
 }
 
-function openQuotingCn(str, index) {
+function isOpenDoubleQuote(char) {
+    return (['“']).includes(char);
+}
+
+function isCloseDoubleQuote(char) {
+    return (['”']).includes(char);
+}
+
+function openDoubleQuotingCn(str, index) {
     if (index == undefined || index < 0 || index >= str.length) {
         console.log(`Checking out of index ${index}`);
         return false;
@@ -48,15 +60,15 @@ function openQuotingCn(str, index) {
         // “中”
         return false;
     }
-    if (isOpenQuote(str[index])) {
+    if (isOpenDoubleQuote(str[index])) {
         let isQuotingCn = false;
         let i = index + 1;
         let stack = [];
         while (i < str.length) {
-            if (isOpenQuote(str[i])) {
+            if (isOpenDoubleQuote(str[i])) {
                 stack.push(str[i]);
             }
-            if (isCloseQuote(str[i])) {
+            if (isCloseDoubleQuote(str[i])) {
                 if (stack.length > 0) {
                     stack.pop();
                 } else {
@@ -64,11 +76,49 @@ function openQuotingCn(str, index) {
                 }
             }
             if (!canBeEn(str[i]) && stack.length == 0) {
-                // 不是中文字符，且已经是最外层嵌套
+                // 不是英文字符，且已经是最外层嵌套
                 isQuotingCn = true;
                 break;
             }
             i++;
+        }
+        return isQuotingCn;
+    }
+
+    return false;
+}
+
+function closeDoubleQuotingCn(str, index) {
+    if (index == undefined || index < 0 || index >= str.length) {
+        console.log(`Checking out of index ${index}`);
+        return false;
+    }
+    if (index < 2) {
+        // 中文引号至少要包含一个中文字符。
+        // “中”
+        return false;
+    }
+    if (isCloseDoubleQuote(str[index])) {
+        let isQuotingCn = false;
+        let i = index - 1;
+        let stack = [];
+        while (i >= 0) {
+            if (isCloseDoubleQuote(str[i])) {
+                stack.push(str[i]);
+            }
+            if (isOpenDoubleQuote(str[i])) {
+                if (stack.length > 0) {
+                    stack.pop();
+                } else {
+                    break;
+                }
+            }
+            if (!canBeEn(str[i]) && stack.length == 0) {
+                // 不是英文字符，且已经是最外层嵌套
+                isQuotingCn = true;
+                break;
+            }
+            i--;
         }
         return isQuotingCn;
     }
@@ -90,12 +140,12 @@ function quotingEn(str, index) {
 
     // 理论上讲开引号后、闭引号前不应该跟空格。
     if (isOpenQuote(str[index])) {
-        // 开引号后，需要是英文。
-        let nextIsEN = index == str.length - 1 || canBeEn(str[index + 1]);
+        // 开引号后，需要是英文，并且向后遍历是否是中文引号。
+        let nextIsEN = (index == str.length - 1 || canBeEn(str[index + 1])) && !openDoubleQuotingCn(str, index);
         return nextIsEN;
     } else if (isCloseQuote(str[index])) {
-        // 闭引号前，需要是英文。
-        let prevIsEN = index == 0 || canBeEn(str[index - 1]);
+        // 闭引号前，需要是英文。并且向前遍历是否是中文引号。
+        let prevIsEN = (index == 0 || canBeEn(str[index - 1])) && !closeDoubleQuotingCn(str, index);
         return prevIsEN;
     } else if (isEnOnlyQuote(str[index])) {
         return true;
@@ -156,7 +206,7 @@ function sanitizer(str) {
     let arr = splitStringByLang(str);
 
     let result = [];
-    let isEn = canBeEn(arr[0]);
+    let isEn = canBeEn(arr[0]) && hasEnLetter(arr[0]);
     // 由于只支持中英，实际上只需要返回第一个元素的语言即可。
     // 不过为了调用者的方便，还是算了。
     for (let i = 0; i < arr.length; i++) {
