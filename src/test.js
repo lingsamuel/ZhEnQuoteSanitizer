@@ -8,7 +8,7 @@ function testResult(str, firstLang, arr) {
     let result = sanitizer(str);
 
     assert(result[0].lang == firstLang);
-    // console.log(result);
+    console.log(result);
     if (arr != undefined) {
         assert(arr.length == result.length, `${JSON.stringify(arr)} != ${JSON.stringify(result)}`);
         for (let i = 0; i < arr.length; i++) {
