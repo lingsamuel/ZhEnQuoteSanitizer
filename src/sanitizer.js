@@ -1,7 +1,13 @@
 // 英文合法字符串
 function canBeEn(str) {
-    // 仅判断：数字字母、逗号、空格、斜杠、ASCII 引号，Unicode 引号，英文圆括号，英文句号，叹号，问号，dash，换行（可能使得结果中中英轮流出现的条件不满足）
+    // 仅判断：数字字母、逗号、空格、斜杠、ASCII 引号，Unicode 引号，英文圆括号，英文句号，英文叹号，英文问号，英文 dash，换行
     return str != undefined && /^[0-9a-zA-Z, //\\\'\"‘’“”\(\)\.\!\?\-\r\n]+$/.test(str);
+}
+
+function onlyNeutralCharacter(str) {
+    // 仅判断中立符号：
+    // 数字、空格、斜杠、Unicode 引号，换行
+    return str != undefined && /^[0-9 //\\‘’“”\r\n]+$/.test(str);
 }
 
 // 英文字母
@@ -206,15 +212,28 @@ function sanitizer(str) {
     let arr = splitStringByLang(str);
 
     let result = [];
+    // let isEn;
+    // if(onlyNeutralCharacter(arr[0])) {
+    //     isEn = canBeEn(arr[1]) && hasEnLetter(arr[1]);
+    // } else {
+    //     isEn = canBeEn(arr[0]) && hasEnLetter(arr[0]);
+    // }
     let isEn = canBeEn(arr[0]) && hasEnLetter(arr[0]);
     // 由于只支持中英，实际上只需要返回第一个元素的语言即可。
     // 不过为了调用者的方便，还是算了。
     for (let i = 0; i < arr.length; i++) {
+        // if (onlyNeutralCharacter(arr[i])) {
+        //   result.push({
+        //     lang: "",
+        //     content: arr[i],
+        //   });
+        // } else {
         result.push({
             lang: isEn ? "en" : "zh",
             content: arr[i],
         });
         isEn = !isEn;
+        // }
     }
     return result;
 }

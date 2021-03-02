@@ -7,10 +7,15 @@ const htmlSanitizer = require("./html-sanitizer");
 function testResult(str, firstLang, arr) {
     let result = sanitizer(str);
 
+    console.log(result);
     if (firstLang != undefined) {
-        assert(result[0].lang == firstLang);
+        if(result[0].lang == "") {
+            assert(result.length > 1)
+            assert(result[1].lang != firstLang, `${result[1].lang} vs ${firstLang}`)
+        } else {
+            assert(result[0].lang == firstLang, `${result[0].lang} vs ${firstLang}`);
+        }
     }
-    // console.log(result);
     // console.log(result[0].lang, result.map(x => x.content));
     if (arr != undefined) {
         assert(arr.length == result.length, `${JSON.stringify(arr)} != ${JSON.stringify(result)}`);
@@ -54,6 +59,11 @@ testResult("中文“中文 English English”。中文", "zh", ['中文“中�
 testResult("English“中文 English English”。中文", "en", ['English', '“中文', ' English English', '”。中文']);
 testResult("English“中文 English English”。English", "en", ['English', '“中文', ' English English', '”。', 'English']);
 
+testResult("中文“中文 English English”English", "zh", ['中文“中文', ' English English', '”', 'English']);
+testResult("中文“中文 English English”中文", "zh", ['中文“中文', ' English English', '”中文']);
+testResult("English“中文 English English”中文", "en", ['English', '“中文', ' English English', '”中文']);
+testResult("English“中文 English English”English", "en", ['English', '“中文', ' English English', '”', 'English']);
+
 testResult("中文“English English”。English", "zh", ['中文', '“English English”', '。', 'English']);
 testResult("中文“English English”。中文", "zh", ['中文', '“English English”', '。中文']);
 testResult("English“English English”。English", "en", ['English“English English”', '。', 'English'])
@@ -65,6 +75,9 @@ testResult("English“English English”。中文", "en", ['English“English En
 // testResult("// 符号开头和空格 他说：“Mary said,‘It’me.’”。");
 // testResult("// 符号开头他说：“Mary said,‘It’me.’”。");
 // testResult("他说：“Mary said,‘It’me.’”。"); // 这个的外引号应该是中文，理论上。
+// 由于丢失了上下文信息，因此不能判断最后一个引号是不是中立引号。
+// testResult("中文“中文 English English”", "zh", ['中文“中文', ' English English', '”']);
+// testResult("English“中文 English English”", "en", ['English', '“中文', ' English English', '”']);
 
 
 // console.log(htmlSanitizer("他说：'Mary said,‘It’me.’'。"))
